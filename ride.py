@@ -8,36 +8,11 @@ import csv
 from flask import Flask,request,jsonify,Response
 from flask_sqlalchemy import SQLAlchemy
 import sys
-# from user import get_all_users
-
-# print(get_all_users.user_data)
 app = Flask(__name__)
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#app.config['SECRET_KEY']='HELLOWORLD'
-#app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///ride.db'
-#debug=False
-#LLOWED_HOST = ["*"]
 
 count=0
 count_rides=0
 db = SQLAlchemy(app)
-# res = app.test_client()
-
-# class User(db.Model):
-#     username = db.Column(db.String(),primary_key=True,unique=True)
-#     password = db.Column(db.String(40))
-
-# class RideShare(db.Model):
-#     rideId = db.Column(db.Integer(),primary_key=True,unique=True,autoincrement=True)
-#     username = db.Column(db.String())
-#     timestamp = db.Column(db.String())
-#     # users = db.Column(db.String(),default="[]")
-#     source = db.Column(db.Integer())
-#     destination = db.Column(db.Integer())
-# class RideShare_User(db.Model):
-#     Id = db.Column(db.Integer(),primary_key=True,unique=True,autoincrement=True)
-#     rideId = db.Column(db.Integer())
-#     users = db.Column(db.String(),default="")
 
 # Validation of date :::
 def valid_date(timedate):
@@ -94,11 +69,10 @@ def get_all_rides():
     tableName='RideShare'
     func_Name='get_all_rides'
     get_ride={"tableName":tableName,"func_Name":func_Name}
-   # get_ride={"func_Name":func_Name,"message":"2"}
     rides=requests.post("http://34.194.180.47:80/api/v1/db/read",json=get_ride)
     r='{}'
     return Response(rides,status=rides.status_code,mimetype="application/json")
-	#reuturn("getting all rides")
+
 # #----------TASK 4:-------
 # # List all upcoming rides for a given source and destination
 @app.route('/api/v1/rides', methods=['GET'])
@@ -111,11 +85,9 @@ def get_specific_ride():
     print(destination)
     tableName='RideShare'
     func_Name='get_specific_ride'
-    # get_ride={"func_Name":func_Name,"message":"3"}
     get_ride={"tableName":tableName,"func_Name":func_Name,"source":source,"destination":destination}
     rides=requests.post("http://34.194.180.47:80/api/v1/db/read",json=get_ride)
     print(rides)
-#     return "get specific ride"
     return Response(rides,status=rides.status_code)
 
 
@@ -125,22 +97,15 @@ def get_specific_ride():
 def ride_details(rideId):
     global count
     count=count+1
-    # rideId=request.args.get("rideId")
     print(rideId)
     tableName='RideShare'
     func_Name='ride_details'
     get_ride={"tableName":tableName,"func_Name":func_Name,"rideId":rideId}
-    # get_ride={"func_Name":func_Name,"message":"4"}
     rides=requests.post("http://34.194.180.47:80/api/v1/db/read",json=get_ride)
     print(rides)
-#     return "ride"
-#    ride=json.loads(rides)
-#    ride=rides[0]
     l= json.loads(rides.text)
-#    print(l[0])
     s= Response(rides.text,status=rides.status_code,mimetype="application/text")
     return s    
-# return Response(rides)
 
 # #----------TASK 6:-------
 # # Joining the existing ride
@@ -148,17 +113,13 @@ def ride_details(rideId):
 def join_ride(rideId):
     global count
     count=count+1
-#     # return jsonify({"s2":rideId})
     tableName='RideShare_User'
     func_Name='join_ride'
     print(rideId)
     data = request.get_json()
     print(data)
     append_user={"tableName":tableName,"func_Name":func_Name,"rideId":rideId,"username":data['username']}
-    # append_user={"func_Name":func_Name,"message":"5"}
     rides=requests.post("http://34.194.180.47:80/api/v1/db/write",json=append_user)
-#     return {},200
-    # return Response(rides)
     r='{}'
     return Response(r,status=rides.status_code,mimetype="application/json")
 
@@ -172,13 +133,9 @@ def delete_ride(rideId):
     count=count+1
     count_rides=count_rides-1
     tableName='RideShare'
-#     # method='DELETE'
     func_Name="delete_ride"
     delete_ride={"tableName":tableName,"func_Name":func_Name,"rideId":rideId}
-    # delete_ride={"func_Name":func_Name,"message":"6"}    
     s=requests.post("http://34.194.180.47:80/api/v1/db/write",json=delete_ride)
-#     return {},200
-    # return Response(s)
     r='{}'
     return Response(r,status=s.status_code,mimetype="application/json")
 
@@ -193,10 +150,7 @@ def clear_db_ride():
     func_Name='clear_db_ride'
 
     new_user={"tableName":tableName,"func_Name":func_Name}
-    # new_user={"func_Name":func_Name,"message":"7"}
     s=requests.post("http://34.194.180.47:80/api/v1/db/write",json=new_user)
-#     return s
-    # return Response(s
     r='{}'
     return Response(r,status=s.status_code,mimetype="application/json")
 
@@ -205,11 +159,7 @@ def clear_db_ride():
 def count_http_request_ride():
     global count
     c=json.dumps(count)
-    #c=[]
-    #c.append(count)
-#    return "success"
     return '['+str(count)+']'
-#    return Response(str(c),status=200,mimetype="application/json")
 
 # #9 RESET COUNT TO 0
 @app.route('/api/v1/_count', methods=['DELETE'])
@@ -222,15 +172,7 @@ def count_reset_ride():
 # #10 COUNT NUMBER OF RIDES
 @app.route('/api/v1/rides/count', methods={'GET'})
 def count_ride():
-#     func_Name='count_ride'
-#     tableName='RideShare'  
-#     new_user={"tableName":tableName,"func_Name":func_Name}
-#     # new_user={"func_Name":func_Name,"message":"8"}
-#     s=requests.post("http://52.73.176.120:3002/api/v1/db/read",json=new_user)
-# #     return s
     global count_rides
-#    c=json.dumps(count_rides)
- #   return Response(str(c),status=200,mimetype="application/json")
     return '['+str(count_rides)+']'
 if __name__=='__main__':
     app.run('0.0.0.0',port=8000,debug=False)
